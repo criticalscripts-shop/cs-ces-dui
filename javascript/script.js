@@ -2,10 +2,6 @@ const hash = window.location.hash ? window.location.hash.replace('#', '') : null
 const hashData = hash ? hash.split('|') : []
 const resourceName = hashData[0]
 const keyPlate = hashData[1]
-
-if ((!resourceName) || (!keyPlate))
-    window.location = 'https://criticalscripts.shop/'
-
 const urlCheckElement = document.createElement('input')
 const lerp = (a, b, t) => (a * (1 - t)) + (b * t)
 
