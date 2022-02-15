@@ -27,14 +27,6 @@ class DummyController {
 
     set(source) {}
 
-    screenshot() {
-        return null
-    }
-
-    dynamic() {
-        return false
-    }
-
     time() {
         return null
     }

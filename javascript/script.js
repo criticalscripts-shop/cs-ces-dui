@@ -7,8 +7,6 @@ const lerp = (a, b, t) => (a * (1 - t)) + (b * t)
 
 const gainLerpIntervalMs = 16.66
 const filterLerpIntervalMs = 16.66
-const frequencyUpdateIntervalMs = 50
-const screenshotUpdateIntervalMs = 500
 const readyCheckIntervalMs = 500
 const playingInfoUpdateIntervalMs = 500
 
@@ -168,7 +166,6 @@ class Speaker {
 class MediaManager {
     constructor(plate) {
         this.plate = plate
-        this.pendingColorFetch = false
         this.playing = false
 
         this.syncedData = {
@@ -203,49 +200,6 @@ class MediaManager {
         }
 
         this.controller = this.controllers.dummy
-
-        setInterval(() => {
-            if (this.controller.playing)
-                fetch(`https://${resourceName}/frequencyData`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        levels: this.getAverageFrequencyValues(),
-                        plate: this.plate
-                    })
-                }).catch(error => {})
-        }, frequencyUpdateIntervalMs)
-
-        setInterval(() => {
-            if (this.pendingColorFetch || (!this.controller.playing))
-                return
-
-            this.pendingColorFetch = true
-
-            let screenshot = this.controller.screenshot()
-
-            if (screenshot)
-                Vibrant.from(screenshot).getPalette((error, palette) => {
-                    if ((!error) && palette.Vibrant && palette.DarkVibrant && palette.LightVibrant && palette.Muted && palette.DarkMuted && palette.LightMuted)
-                        fetch(`https://${resourceName}/colorData`, {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                plate: this.plate,
-                                colors: {
-                                    Vibrant: palette.Vibrant.rgb,
-                                    DarkVibrant: palette.DarkVibrant.rgb,
-                                    LightVibrant: palette.LightVibrant.rgb,
-                                    Muted: palette.Muted.rgb,
-                                    DarkMuted: palette.DarkMuted.rgb,
-                                    LightMuted: palette.LightMuted.rgb
-                                }
-                            })
-                        }).catch(error => {})
-
-                    this.pendingColorFetch = false
-                })
-            else
-                this.pendingColorFetch = false
-        }, screenshotUpdateIntervalMs)
 
         setInterval(() => this.controllerPlayingInfo(this.controller), playingInfoUpdateIntervalMs)
 
@@ -289,20 +243,6 @@ class MediaManager {
     controllerHooked(controller) {
         if (controller.media)
             controller.media.connect(this.analyser)
-    }
-
-    controllerInfo(controller) {
-        if (controller.key === this.controller.key)
-            fetch(`https://${resourceName}/controllerInfo`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    plate: this.plate,
-                    controller: controller.key,
-                    dynamic: controller.dynamic()
-                })
-            }).catch(error => {})
-
-        this.controllerPlayingInfo(controller)
     }
 
     controllerSeeked(controller) {
@@ -379,51 +319,6 @@ class MediaManager {
 
     addSpeaker(id, options) {
         this.speakers[id] = new Speaker(id, options, this)
-    }
-
-    getAverageFrequencyValues() {
-        const types = {
-            bass: {
-                from: 20,
-                to: 140
-            },
-
-            lowMid: {
-                from: 140,
-                to: 400
-            },
-
-            mid: {
-                from: 400,
-                to: 2600
-            },
-
-            highMid: {
-                from: 2600,
-                to: 5200
-            },
-
-            treble: {
-                from: 5200,
-                to: 14000
-            }
-        }
-
-        const nyquistFrequency = this.context.sampleRate / 2
-        const frequencyData = new Uint8Array(this.analyser.frequencyBinCount)
-
-        this.analyser.getByteFrequencyData(frequencyData)
-
-        const output = {}
-
-        for (const key in types) {
-            const lowIndex = Math.round((types[key].from / nyquistFrequency) * frequencyData.length)
-            const highIndex = Math.round((types[key].to / nyquistFrequency) * frequencyData.length)
-
-            output[key] = frequencyData.slice(lowIndex, highIndex).reduce((total, number) => total + number, 0) / (highIndex - lowIndex)
-        }
-
-        return output
     }
 
     sync(data) {
@@ -555,7 +450,6 @@ class MediaManager {
             this.controller.set(data.source)
         }
 
-        this.controllerInfo(this.controller)
         this.controllerPlayingInfo(this.controller)
     }
 

@@ -81,10 +81,8 @@ class FrameController extends DummyController {
             this.video = false
             this.element = null
             this.stop()
-            this.manager.controllerInfo(this)
             return
-        } else
-            this.manager.controllerInfo(this)
+        }
 
         if (element !== this.element) {
             if (this.media)
@@ -216,7 +214,6 @@ class FrameController extends DummyController {
         this.hooked = false
         this.element = null
         this.frame.src = 'about:blank'
-        this.manager.controllerInfo(this)
     }
 
     seek(time) {
@@ -257,33 +254,11 @@ class FrameController extends DummyController {
         this.element = null
         this.frame.src = this.source
         this.manager.hideSpinner()
-        this.manager.controllerInfo(this)
         this.seeked()
     }
 
     time() {
         return (this.source && this.element && this.element.currentTime) || 0
-    }
-
-    screenshot() {
-        if ((!this.element) || (!this.playing) || (!this.source) || (!this.video) || this.element.clientWidth <= 0 || this.element.clientHeight <= 0)
-            return null
-
-        this.canvas.width = this.element.clientWidth
-        this.canvas.height = this.element.clientHeight
-        this.canvas.getContext('2d').drawImage(this.element, 0, 0, this.canvas.width, this.canvas.height)
-
-        const image = new Image()
-
-        image.width = this.canvas.width
-        image.height = this.canvas.height
-        image.src = this.canvas.toDataURL()
-
-        return image
-    }
-
-    dynamic() {
-        return this.video
     }
 
     show() {
