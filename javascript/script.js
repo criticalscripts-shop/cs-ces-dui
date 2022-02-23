@@ -312,7 +312,7 @@ class MediaManager {
     sync(data) {
         this.plate = data.plate
 
-        this.set(data.url !== this.syncedData.url || data.temp.force, data.url).then(() => {
+        this.set(data.url !== this.syncedData.url || data.temp.force, data.playing, data.url).then(() => {
             if (this.plate !== data.plate)
                 return
 
@@ -391,7 +391,7 @@ class MediaManager {
         this.controller.hide()
     }
 
-    set(state, source) {
+    set(state, playing, source) {
         return new Promise(async (resolve, reject) => {
             this.syncedData.url = source
 
@@ -449,30 +449,38 @@ class MediaManager {
             } else {
                 if (state)
                     this.controller.set(null)
-                
-                const cb = () => {
-                    this.controller = this.controllers[data.key]
+            
+                const cb = (dummy = false) => {
+                    const oldControllerKey = this.controller.key
 
-                    if (state)
+                    if (dummy)
+                        this.controller = this.controllers.dummy
+                    else
+                        this.controller = this.controllers[data.key]
+                    
+                    if (state || oldControllerKey !== this.controller.key)
                         this.controller.set(data.source)
     
                     resolve()
                 }
 
                 if (!this.controllers[data.key])
-                    switch (data.key) {
-                        case 'youtube':
-                            this.controllers[data.key] = new YouTubeController(this, cb)
-                            break
+                    if (playing)
+                        switch (data.key) {
+                            case 'youtube':
+                                this.controllers[data.key] = new YouTubeController(this, cb)
+                                break
 
-                        case 'twitch':
-                            this.controllers[data.key] = new TwitchController(this, cb)
-                            break
-                        
-                        case 'frame':
-                            this.controllers[data.key] = new FrameController(this, cb)
-                            break
-                    }
+                            case 'twitch':
+                                this.controllers[data.key] = new TwitchController(this, cb)
+                                break
+                            
+                            case 'frame':
+                                this.controllers[data.key] = new FrameController(this, cb)
+                                break
+                        }
+                    else
+                        cb(true)
                 else
                     cb()
             }
