@@ -313,6 +313,9 @@ class MediaManager {
         this.plate = data.plate
 
         this.set(data.url !== this.syncedData.url || data.temp.force, data.url).then(() => {
+            if (this.plate !== data.plate)
+                return
+
             if ((data.stopped !== this.syncedData.stopped || data.temp.force) && data.stopped)
                 this.stop()
             else if (data.playing !== this.syncedData.playing || data.temp.force) {
@@ -331,7 +334,7 @@ class MediaManager {
                 this.seek(data.temp.force && data.duration ? (data.time + 1 > data.duration ? data.time : (data.time + 1)) : data.time)
 
             if (data.videoToggle !== this.syncedData.videoToggle || data.temp.force)
-                if (data.videoToggle || typeof(data.videoToggle) === 'undefined') // Backwards compatibility with 1.x.x versions.
+                if (data.videoToggle || typeof(data.videoToggle) === 'undefined')
                     this.show()
                 else
                     this.hide()
@@ -388,7 +391,7 @@ class MediaManager {
         this.controller.hide()
     }
 
-    set(state, source, cb) {
+    set(state, source) {
         return new Promise(async (resolve, reject) => {
             this.syncedData.url = source
 

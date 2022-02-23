@@ -22,7 +22,7 @@ class FrameController extends DummyController {
         this.canvas = document.createElement('canvas')
         this.frame = document.createElement('iframe')
 
-        this.frame.id = `frame-controller-${this.manager.plate}`
+        this.frame.id = 'frame-controller'
         this.frame.style.display = 'none'
         this.frame.seamless = true
         this.frame.src = 'about:blank'

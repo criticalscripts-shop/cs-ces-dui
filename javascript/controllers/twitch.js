@@ -28,7 +28,7 @@ class TwitchController extends DummyController {
         this.canvas = document.createElement('canvas')
 
         const placeholder = document.createElement('div')
-        const elementId = `twitch-controller-${this.manager.plate}`
+        const elementId = 'twitch-controller'
 
         placeholder.id = elementId
 

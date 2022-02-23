@@ -28,7 +28,7 @@ class YouTubeController extends DummyController {
         this.canvas = document.createElement('canvas')
 
         const placeholder = document.createElement('div')
-        const elementId = `youtube-controller-${this.manager.plate}`
+        const elementId = 'youtube-controller'
 
         placeholder.id = elementId
         
