@@ -49,13 +49,14 @@ class Speaker {
         this.panner.coneOuterAngle = this.options.coneOuterAngle
         this.panner.coneOuterGain = this.options.coneOuterGain
 
-        this.manager.analyser.connect(this.panner)
+        this.manager.node.connect(this.panner)
         this.panner.connect(this.gain)
         this.gain.connect(this.manager.context.destination)
 
         this.lowPassFilterFade = 0.0
         this.filterConnected = false
         this.insideVehicle = false
+        this.twoDimensionalAudio = false
     }
 
     update(data) {
@@ -92,13 +93,13 @@ class Speaker {
             this.insideVehicle = this.manager.insideVehicle
 
             if (this.insideVehicle) {
-                this.manager.analyser.disconnect(this.panner)
-                this.panner.disconnect(this.gain)
-                this.manager.analyser.connect(this.gain)
-            } else {
-                this.manager.analyser.disconnect(this.gain)
-                this.manager.analyser.connect(this.panner)
-                this.panner.connect(this.gain)
+                this.twoDimensionalAudio = true
+                this.manager.node.disconnect(this.panner)
+                this.manager.node.connect(this.gain)
+            } else if (this.twoDimensionalAudio) {
+                this.twoDimensionalAudio = false
+                this.manager.node.disconnect(this.gain)
+                this.manager.node.connect(this.panner)
             }
         }
     }
@@ -182,14 +183,11 @@ class MediaManager {
         this.volume = 0.0
         this.applyLowPassFilter = true
 
-        this.context = new window.AudioContext()
+        this.context = new AudioContext()
+        this.node = this.context.createGain()
         this.listener = this.context.listener
-        this.analyser = this.context.createAnalyser()
 
         this.timeDelta = 0.05
-
-        this.analyser.fftSize = 4096
-        this.analyser.smoothingTimeConstant = 0.8
 
         this.controllers = {
             dummy: new DummyController(this, true)
@@ -232,7 +230,7 @@ class MediaManager {
 
     controllerHooked(controller) {
         if (controller.media)
-            controller.media.connect(this.analyser)
+            controller.media.connect(this.node)
     }
 
     controllerSeeked(controller) {
