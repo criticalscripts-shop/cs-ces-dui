@@ -313,7 +313,7 @@ class MediaManager {
 
     sync(data) {
         this.plate = data.plate
-    
+
         this.set(data.url !== this.syncedData.url || data.temp.force, data.url).then(() => {
             if ((data.stopped !== this.syncedData.stopped || data.temp.force) && data.stopped)
                 this.stop()
@@ -337,6 +337,13 @@ class MediaManager {
                     this.show()
                 else
                     this.hide()
+
+            fetch(`https://${resourceName}/synced`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    plate: this.plate
+                })
+            }).catch(error => {})
         })
     }
 
