@@ -482,7 +482,7 @@ class MediaManager {
                     else
                         cb(true)
                 else
-                    cb(true)
+                    cb()
             }
 
             if (state)
