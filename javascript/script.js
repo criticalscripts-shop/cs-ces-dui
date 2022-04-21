@@ -485,8 +485,7 @@ class MediaManager {
                     cb()
             }
 
-            if (state)
-                this.controllerPlayingInfo(this.controller)
+            this.controllerPlayingInfo(this.controller)
         })
     }
 
