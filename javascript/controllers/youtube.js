@@ -74,6 +74,11 @@ class YouTubeController extends DummyController {
                                 this.manager.controllerError(this, `E_YOUTUBE_ERROR`)
                             }
 
+                        const ytVideoId = this.player.getVideoUrl().match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i)
+
+                        if (((!ytVideoId) || ytVideoId[1] !== this.source) && this.source !== null)
+                            return
+
                         if ((this.player.getPlayerState() === YT.PlayerState.ENDED || this.player.getPlayerState() === -1) && this.playing) {
                             this.set(null)
                             this.manager.controllerEnded(this)
@@ -89,6 +94,11 @@ class YouTubeController extends DummyController {
                     },
 
                     onStateChange: event => {
+                        const ytVideoId = this.player.getVideoUrl().match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i)
+
+                        if (((!ytVideoId) || ytVideoId[1] !== this.source) && this.source !== null)
+                            return
+
                         if (this.player.getPlayerState() === YT.PlayerState.PLAYING)
                             this.controls(this.player.getIframe().contentWindow.navigator.mediaSession)
 
