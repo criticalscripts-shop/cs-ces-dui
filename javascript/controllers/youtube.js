@@ -291,7 +291,6 @@ class YouTubeController extends DummyController {
         this.source = source
         this.duration = null
         this.player.cueVideoById(this.source)
-        this.seeked()
     }
 
     time() {
