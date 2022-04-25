@@ -126,7 +126,7 @@ class YouTubeController extends DummyController {
                         if (this.pending.stop && this.player.getPlayerState() === YT.PlayerState.PLAYING)
                             this.stop()
 
-                        if ((this.player.getPlayerState() === YT.PlayerState.PLAYING || this.player.getPlayerState() === YT.PlayerState.PAUSED || this.player.getPlayerState() === YT.PlayerState.BUFFERING) && this.showing)
+                        if ((this.player.getPlayerState() === YT.PlayerState.PLAYING || this.player.getPlayerState() === YT.PlayerState.PAUSED || this.player.getPlayerState() === YT.PlayerState.BUFFERING) && this.showing && this.player.getCurrentTime() > 0)
                             this.container.style.display = 'block'
                         else
                             this.container.style.display = 'none'
@@ -140,7 +140,7 @@ class YouTubeController extends DummyController {
                             this.hook()
 
                         if (this.player.getPlayerState() === YT.PlayerState.PLAYING && (!this.duration))
-                            this.duration = this.player.getCurrentTime() < 1 ? (this.player.getDuration() ? this.player.getDuration() : -1) : -1
+                            this.duration = (!this.player.getDuration()) || this.player.getDuration() < 1 ? null : this.player.getDuration()
 
                         if (this.player.getPlayerState() === YT.PlayerState.PLAYING) {
                             this.pending.play = false
@@ -298,12 +298,9 @@ class YouTubeController extends DummyController {
     }
 
     show() {
-        if (!this.ready)
-            return
-
         this.showing = true
 
-        if (this.player.getPlayerState() === YT.PlayerState.PLAYING || this.player.getPlayerState() === YT.PlayerState.PAUSED || this.player.getPlayerState() === YT.PlayerState.BUFFERING)
+        if (this.player.getCurrentTime() > 0 && (this.player.getPlayerState() === YT.PlayerState.PLAYING || this.player.getPlayerState() === YT.PlayerState.PAUSED || this.player.getPlayerState() === YT.PlayerState.BUFFERING))
             this.container.style.display = 'block'
     }
 
