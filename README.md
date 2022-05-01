@@ -1,2 +1,2 @@
-# cs-ces-dui
-The DUI of the FiveM resource "cs-ces".
+# cs-ves-dui
+The DUI of the FiveM resource "cs-ves".

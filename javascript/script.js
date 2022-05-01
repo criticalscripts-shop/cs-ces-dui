@@ -494,7 +494,7 @@ class MediaManager {
 
 window.addEventListener('message', event => {
     switch (event.data.type) {
-        case 'cs-ces:create':
+        case 'cs-ves:create':
             if (activeInstance)
                 return
 
@@ -502,7 +502,7 @@ window.addEventListener('message', event => {
 
             break
 
-        case 'cs-ces:update':
+        case 'cs-ves:update':
             if ((!activeInstance) || event.data.plate !== activeInstance.plate)
                 return
 
@@ -515,7 +515,7 @@ window.addEventListener('message', event => {
 
             break
 
-        case 'cs-ces:addSpeaker':
+        case 'cs-ves:addSpeaker':
             if ((!activeInstance) || event.data.plate !== activeInstance.plate)
                 return
 
@@ -533,7 +533,7 @@ window.addEventListener('message', event => {
 
             break
 
-        case 'cs-ces:setIdleWallpaperUrl':
+        case 'cs-ves:setIdleWallpaperUrl':
             if ((!activeInstance) || event.data.plate !== activeInstance.plate)
                 return
 
@@ -541,7 +541,7 @@ window.addEventListener('message', event => {
 
             break
 
-        case 'cs-ces:sync':
+        case 'cs-ves:sync':
             if ((!activeInstance) || event.data.plate !== activeInstance.plate)
                 return
 
@@ -558,7 +558,7 @@ window.addEventListener('message', event => {
 
             break
 
-        case 'cs-ces:adjust':
+        case 'cs-ves:adjust':
             if ((!activeInstance) || event.data.plate !== activeInstance.plate)
                 return
 
