@@ -216,7 +216,7 @@ class MediaManager {
     }
 
     controllerPlayingInfo(controller) {
-        if (controller.key === this.controller.key)
+        if (controller.key === this.controller.key && this.plate)
             fetch(`https://${resourceName}/controllerPlayingInfo`, {
                 method: 'POST',
                 body: JSON.stringify({
