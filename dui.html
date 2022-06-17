@@ -101,12 +101,11 @@
             const urlParams = new URLSearchParams(window.location.search)
             const debug = urlParams.get('debug')
             const version = urlParams.get('v')
-            const bump = 'twitch-fix'
 
             const loadScript = src => {
                 const script = document.createElement('script')
             
-                script.src = `${src}?v=${version}&c=${debug ? new Date().getTime() : 'on'}&b=${bump}`
+                script.src = `${src}?v=${version}&c=${debug ? new Date().getTime() : 'on'}`
                 script.type = 'text/javascript'
                 script.async = false
             
