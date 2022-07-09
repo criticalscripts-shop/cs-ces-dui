@@ -78,17 +78,9 @@ class Speaker {
             else
                 this.connectFilter(this.lowPassFilterFade)
         }
-        
-        const linearMultiplier = 1.0 - ((data.distance - this.options.refDistance) / (this.options.maxDistance - this.options.refDistance))
-        const exponentialMultiplier = Math.pow(Math.max(data.distance, this.options.refDistance) / this.options.refDistance, -this.options.rolloffFactor)
 
-        if (linearMultiplier < exponentialMultiplier)
-            this.panner.distanceModel = 'linear'
-        else
-            this.panner.distanceModel = 'exponential'
-
-        this.gain.gain.value = 0.75 * (this.manager.volume * this.volumeMultiplier * this.filterGainMultiplier)
-
+        this.gain.gain.value = 0.75 * this.manager.volume * this.volumeMultiplier * this.filterGainMultiplier * (data.distance < this.options.refDistance ? 1.0 : (data.distance - this.options.refDistance) > this.options.maxDistance ? 0 : (1.0 - ((data.distance - this.options.refDistance) / this.options.maxDistance)))
+ 
         if (this.manager.insideVehicle !== this.insideVehicle) {
             this.insideVehicle = this.manager.insideVehicle
 
