@@ -19,7 +19,6 @@ class Speaker {
 
         this.volumeMultiplier = this.options.volumeMultiplier
         this.filterGainMultiplier = 1.0
-        this.distanceMultiplier = 1.0
         this.applyLowPassFilter = true
 
         this.filter = this.manager.context.createBiquadFilter()
@@ -80,7 +79,7 @@ class Speaker {
         }
 
         this.gain.gain.value = 0.75 * this.manager.volume * this.volumeMultiplier * this.filterGainMultiplier * (data.distance < this.options.refDistance ? 1.0 : (data.distance - this.options.refDistance) > this.options.maxDistance ? 0 : (1.0 - ((data.distance - this.options.refDistance) / this.options.maxDistance)))
- 
+
         if (this.manager.insideVehicle !== this.insideVehicle) {
             this.insideVehicle = this.manager.insideVehicle
 
